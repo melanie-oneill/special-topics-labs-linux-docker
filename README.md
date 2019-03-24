@@ -2,13 +2,11 @@
 
 ## Objective
 
-For this lab, you will learn a little more about writing and executing shell scripts, and using docker.
+For this lab, you will learn a little more about writing and executing shell scripts, and using docker.  You will also gain a little experience with [Docker Compose](https://docs.docker.com/compose/).  Frequently your project will require more than one service to function (e.g. an application server, load balancer, and database server).  
+
+Docker Compose lets you specify the docker images you want to run (with configuration for each service) in a YAML file and will launch all of the containers and link them together.  Starting your complex application is then as simple as invoking `docker-compose -f <my-compose-specification>.yml up` to start your entire application.
 
 ## Prerequisites
-
-* Create a "labs" directory if you don't already have one by opening a terminal
-and typing:
-``mkdir ~/labs``
 
 * Install ``docker-compose``:
 1. Run the following command: ``sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose``
@@ -41,7 +39,7 @@ docker-compose version 1.23.2, build 1110ad01
 ## Completing the Assignment
 
 1. The goal of this assignment is to create a shell script that controls an application (GitLab) with docker-compose.  GitLab is a git repository server, similar to GitHub, but can be self-hosted.  
-    1. Your shell script should be called ``gitlab-ctl.sh`` and it should be in the ``bin`` subdirectory of this lab
+    1. Your shell script should be called ``gitlab-ctl.sh`` and it should be in the ``bin`` subdirectory of this repo
     1. Your script should accept the following options (*Hint* [getopts](http://pubs.opengroup.org/onlinepubs/9699919799.2018edition/utilities/getopts.html) is a bash built-in function that helps you process command-line arguments.  You can find a simple tutorial [here](http://pubs.opengroup.org/onlinepubs/9699919799.2018edition/utilities/getopts.html)).
         * ``-h`` - (optional argument) display help and exit with a status code 0.  The help should look similar to what you see when you pass ``--help`` to standard commands (e.g. ``grep --help``).  *Hint*: It's frequently helpful to create a ``usage`` function that prints out the correct command usage.
         * ``-d <directory>`` - (optional argument) uses the specified directory as the directory to provide postgres for storing database content.  If the ``-d`` parameter isn't used the default location should be ``/tmp/gitlab-data``
@@ -51,6 +49,17 @@ docker-compose version 1.23.2, build 1110ad01
     1. You should test that your script works by logging in to GitLab, and of course you should test all of the parameters.  The hostname to put in the url should be ``localhost``, so you should be able to point your browser to [http://localhost] if you start your GitLab with your default settings.
     1. You will need to volume mount the value passed as the ``-d`` parameter (defaulted to ``/tmp/gitlab-data`` to your postgresql instance. 
     1. You should run your service in the background (i.e. ``Detached mode``).  To see how to do this consult ``docker-compose up --help``.
+
+## Hints
+1. Your reading assignments include overviews of writing shell scripts and docker compose.  I suggest you read through them to get a good intro to both.
+1. The [https://developer.ibm.com/code/2017/07/13/step-step-guide-running-gitlab-ce-docker/] site talks about Kubernetes, but you may safely ignore it.  We won't be using Kubernetes in this lab
+1. The [docker-compose.yml](https://github.com/IBM/Kubernetes-container-service-GitLab-sample/blob/master/docker-compose.yml) file specified in that IBM blog entry is a great place to start.  Note that it starts GitLab on port 30080 (`- "30080:30080"`), so you might need to fix it up.  You can specify an environment variable in the yml file as long as you set it in your script before running `docker-compose`.
+1. I would suggest you develop your script in multiple phases, to make it easier.  For example:
+    1. Download the `docker-compose.yml` and run various `docker-compose` invocations (`docker-compose up`, `docker-compose stop`, etc.) to become familiar with running docker-compose.
+    2. Have your shell script invoke `docker-compose`.  You can start by hardcoding the `docker-compose up` and then use a command line argument to choose up/down/stop/etc.
+    3. Finally, add in the command line arguments you need to support.
+1. Note that with `docker-compose` you need not specify the yml file you want to use, but you can.  You can run `docker-compose -f <location-of-my-yml-file>.yml up` or `docker-compose up`.  If you don't specify the YML file, docker-compose will look in the current directory for a file named `docker-compose.yml`.  If it doesn't find it, it will complain.  When testing your lab, I will run the command from your `bin/` directory so you don't have to deal with Linux paths if you don't want to.
+1. Note that your `gitlab-ctl.sh` script takes "start", but `docker-compose` takes "up".  
 
 ## Submitting Your Work
 
