@@ -9,9 +9,9 @@ function HELP {
   echo -e \\n"Help documentation for this script"\\n
   echo -e "Basic usage: httpd-ctl.sh [command] [options]"\\n
   echo -e "Commands are: start, stop, & destroy"\\n
-  echo " -h     This help menu"
-  echo " -d     root directory on your system to find www root"
-  echo " -p     local port you want to be able to access"
+  echo -h "This help menu"
+  echo -d "root directory on your system to find www root"
+  echo -p "local port you want to be able to access"
 }
 
 while getopts 'hd:p:' OPTION; do
@@ -33,7 +33,7 @@ case $1 in
 
 	start)
          echo "starting your docker images"
-		 ocker run -dit --name my-apache-app $PORTOPT $DIR httpd:2.4
+		 docker run -dit --name my-apache-app $PORTOPT $DIR httpd:2.4
 		 ;;
 	stop)
 	    echo "stopping your docker instances"
