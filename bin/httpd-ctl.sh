@@ -5,6 +5,7 @@ PORTOPT="-p 8080:80"
 
 echo "hello"
 
+
 function HELP {
   echo -e \\n"Help documentation for this script"\\n
   echo -e "Basic usage: httpd-ctl.sh [command] [options]"\\n
